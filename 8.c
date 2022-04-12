@@ -1,86 +1,105 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 
 struct node
-{ 
-    struct node *prev; 
-    int data; 
-    struct node *next; 
+{
+    int info;
+    struct node *next;
+    struct node *prev;
 };
+struct node *head = NULL;
 int count=0; 
-struct node *head=NULL;
 
-void insert_beg() 
-{ 
-    int a; 
-    struct node *temp=head; 
-    printf("Enter element\n"); 
-    scanf("%d",&a); 
-    struct node *new=(struct node *)malloc(sizeof(struct node)); 
-    new->data=a; 
-    count++; 
-    if(head==NULL) 
-    { 
-        new->next=new->prev=NULL; 
-        head=new; 
-        return; 
+
+void display()
+{
+    printf("\n 1) Insert Element At begining ");
+    printf("\n 2) Traverse doubly Linked List");
+    printf("\n 3) Insert Before a given value ");
+    printf("\n 4) Delete the Middle element ");
+    printf("\n  -1 to Exit  ");
+}
+
+void insertAtbeg(int number)
+{
+    struct node *temp = head;
+    struct node *fnNode = (struct node *)malloc(sizeof(struct node));
+    fnNode->info = number;
+    count++;
+    if (head == NULL)
+    {
+        fnNode->prev = fnNode->next = NULL;
+        head = fnNode;
+        return;
     }
-    else 
-    { 
-        new->next=head; 
-        head->prev=new; 
-        new->prev=NULL; 
-        head=new; 
+    else
+    {
+        fnNode->next = head;
+        head->prev = fnNode;
+        fnNode->prev = NULL;
+        head = fnNode;
     }
 }
 
-void insert_before() 
-{ 
-    int c,d; 
-    struct node *temp,*cur; 
-    printf("Enter element\n"); 
-    scanf("%d",&c); 
-    printf("Enter before which element\n"); 
-    scanf("%d",&d); 
-    struct node *new=(struct node *)malloc(sizeof(struct node)); 
-    new->data=c; 
-    count++; 
-    if(head==NULL)
-    { 
-        new->next=new->prev=NULL; 
-        head=new; return; 
+void traverse()
+{
+    struct node *temp = head;
+    if (temp == NULL)
+    {
+        printf("\n Empty linked list");
+        return;
     }
-    if(head->data==d) 
-    { 
-        new->next=head; 
-        head->prev=new; 
-        new->prev=NULL; 
-        head=new; 
-    } 
-    temp=head; 
-    while(temp!=NULL && temp->data<d) 
-    { 
-        cur=temp; 
-        temp=temp->next; 
-    } 
-    cur->next=new; 
-    new->prev=cur; 
-    new->next=temp; 
-    temp->prev=new; 
+    while (temp != NULL)
+    {
+        printf("%d->", temp->info);
+        temp = temp->next;
+    }
+    printf("\n ");
 }
 
-void display() 
-{ 
-    struct node *temp=head; 
-    while(temp!=NULL) 
-    { 
-        printf("%d->",temp->data); 
-        temp=temp->next; 
-    } 
-    printf("NULL");
+void insertBefore(int number, int item)
+{
+    int flag = 0;
+    struct node *fnNode = (struct node *)malloc(sizeof(struct node));
+    fnNode->info = item;
+    struct node *temp = head;
+
+    if (temp == NULL)
+    {
+        printf("empty linked list\n");
+        return;
+    }
+    count++;
+    if (temp->info == number)
+    {
+        insertAtbeg(item);
+        flag = 1;
+        return;
+    }
+    while (temp != NULL)
+    {
+        if (temp->info == number)
+        {
+            flag = 1;
+            break;
+        }
+        temp = temp->next;
+    }
+    if (flag == 0)
+    {
+        printf("\n Element not found");
+        return;
+    }
+    fnNode->prev = temp->prev;
+    temp->prev = fnNode;
+    fnNode->next = temp;
+    fnNode->prev->next = fnNode;
+
+    printf("\n Element has been inserted \n");
 }
 
-void delete_middle() 
+void deletemid() 
 { 
     struct node *temp=head,*old; 
     int i,mid; mid=count/2;
@@ -88,14 +107,16 @@ void delete_middle()
     { 
         for(i=1;i<mid;i++) 
         { 
-            old=temp; temp=temp->next; 
+            old=temp; 
+            temp=temp->next; 
         } 
     } 
     else
     { 
         for(i=1;i<=mid;i++)
         { 
-            old=temp; temp=temp->next; 
+            old=temp; 
+            temp=temp->next; 
         } 
     } 
     old->next=temp->next; 
@@ -103,42 +124,47 @@ void delete_middle()
     free(temp); 
 }
 
-int main() 
-{ 
-    int g; 
-    while(1) 
-    { 
-        printf("\nEnter 1 to insert beg\nEnter 2 to insert end\nEnter 3 to insert before a value\nEnter 4 to display\nEnter 5 to exit\n"); 
-        scanf("%d",&g); 
-        switch(g) 
-        { 
-            case 1: insert_beg(); 
-            break; 
+int main()
+{
+    int num, option, before;
+    display();
+    printf(" Your OPTION :  ");
+    scanf("%d", &option);
+    while (option != -1)
+    {
+        switch (option)
+        {
 
-            case 2: insert_end();
+        case 1:
+            printf("\n Enter the Element to insert at Front  : ");
+            scanf("%d", &num);
+            insertAtbeg(num);
             break;
-             
-            case 3:insert_before(); 
-            break; 
-            
-            case 4: display(); 
-            break; 
-            
-            case 5: exit(0); 
-            break; 
-            
-            case 6: delete_beg(); 
-            break; 
-            
-            case 7: delete_end(); 
-            break; 
-            
-            case 8: delete_middle(); 
-            break; 
-            
-            default: printf("Wrong choice\n"); 
-            break; 
-            } 
-        } 
-    return 0; 
+
+        case 2:
+            printf("\n The elements are = ");
+            traverse();
+            break;
+
+        case 3:
+            printf("\n Enter the element before which it has to be inserted :  ");
+            scanf("%d", &before);
+            printf("\n Enter the element  to be inserted :  ");
+            scanf("%d", &num);
+            insertBefore(before, num);
+            break;
+
+        case 4:
+            deletemid();
+            break;
+
+        default:
+            printf("\n Wrong option, Please try again ");
+        }
+
+        display();
+        printf("\n Your OPTION :  ");
+        scanf("%d", &option);
+    }
+    return 0;
 }
